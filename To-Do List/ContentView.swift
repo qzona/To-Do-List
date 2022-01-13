@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @ObservedObject var toDoList = ToDoList()
+    @State private var showingAddItemView = false
     var body: some View {
         NavigationView {
             List {
@@ -23,21 +24,30 @@ struct ContentView: View {
                         Text(item.dueDate, style: .date)
                     }
                 }
+                
+                .onMove(perform: { indices, newOffset in
+                    toDoList.items.move(fromOffsets: indices, toOffset: newOffset)
+                })
+                .onDelete(perform: { indexSet in
+                    toDoList.items.remove(atOffsets: indexSet)
+                })
+                
+                
+            }
+            .navigationBarTitle("To Do List", displayMode: .inline)
+            .navigationBarItems(leading: EditButton(),
+                                trailing: Button(action: {
+                                                    showingAddItemView = true}) {
+                                    Image(systemName: "plus")
+                                })
             
-            .onMove(perform: { indices, newOffset in
-                toDoList.items.move(fromOffsets: indices, toOffset: newOffset)
-            })
-            .onDelete(perform: { indexSet in
-                toDoList.items.remove(atOffsets: indexSet)
+            .sheet(isPresented: $showingAddItemView, content: {
+                AddItemView(toDoList: toDoList)
             })
             
             
         }
-        .navigationBarTitle("To Do List", displayMode: .inline)
-        .navigationBarItems(leading: EditButton())
-        
     }
-}
 }
 
 struct ContentView_Previews: PreviewProvider {
@@ -45,7 +55,8 @@ struct ContentView_Previews: PreviewProvider {
         ContentView()
     }
 }
-struct ToDoItem: Identifiable {
+struct ToDoItem: Identifiable, Codable {
+
     var id = UUID()
     var priority = String()
     var description = String()

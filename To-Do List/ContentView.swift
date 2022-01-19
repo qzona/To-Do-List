@@ -19,9 +19,11 @@ struct ContentView: View {
                             Text(item.priority)
                                 .font(.headline)
                             Text(item.description)
+                                .foregroundColor(.red)
                         }
                         Spacer()
                         Text(item.dueDate, style: .date)
+                            .foregroundColor(.blue)
                     }
                 }
                 
@@ -33,7 +35,7 @@ struct ContentView: View {
                 })
                 
             }
-            .navigationBarTitle("To Do List", displayMode: .inline)
+            .navigationBarTitle("Assignment Notebook", displayMode: .inline)
             
             .navigationBarItems(leading: EditButton(),
                                 trailing: Button(action: {

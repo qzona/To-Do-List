@@ -16,28 +16,25 @@ struct AddItemView: View {
     static let priorities = ["High", "Medium", "Low"]
     var body: some View {
         NavigationView {
-            List {
-                ForEach(toDoList.items) { item in
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(item.description)
-                        }
-                        Spacer()
-                        Text(item.dueDate, style: .date)
-                    }
-                    
-                }
-                .onMove(perform: { indices, newOffset in
-                    toDoList.items.move(fromOffsets: indices, toOffset: newOffset)
-                })
-                .onDelete(perform: { indexSet in
-                    toDoList.items.remove(atOffsets: indexSet)
-                })
-                
-            }
-            .navigationBarTitle("Things", displayMode: .inline)
-            .navigationBarItems(leading: EditButton())
-        }
+                   Form {
+                    TextField("Description", text: $description)
+                                    DatePicker("Due Date", selection: $dueDate, displayedComponents: .date)
+                       Picker("Priority", selection: $priority) {
+                           ForEach(Self.priorities, id: \.self) { priority in
+                               Text(priority)
+                           }
+                       }
+                   }
+                   .navigationBarItems(trailing: Button("Save") {
+                                   if priority.count > 0 && description.count > 0 {
+                                       let item = ToDoItem(id: UUID(), priority: priority,
+                                                           description: description, dueDate: dueDate)
+                                       toDoList.items.append(item)
+                                       presentationMode.wrappedValue.dismiss()
+                                   }
+                               })
+
+               }
     }
 }
 

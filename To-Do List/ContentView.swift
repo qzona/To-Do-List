@@ -32,15 +32,14 @@ struct ContentView: View {
                     toDoList.items.remove(atOffsets: indexSet)
                 })
                 
-                
             }
             .navigationBarTitle("To Do List", displayMode: .inline)
+            
             .navigationBarItems(leading: EditButton(),
                                 trailing: Button(action: {
                                                     showingAddItemView = true}) {
                                     Image(systemName: "plus")
                                 })
-            
             .sheet(isPresented: $showingAddItemView, content: {
                 AddItemView(toDoList: toDoList)
             })
